@@ -35,7 +35,7 @@ namespace Xamarin3d
             GL.Viewport((int)rect.Left, (int)rect.Top, (int)rect.Width, (int)rect.Height);
             if (!Initialized)
             {
-                InitializeScene();
+                InitializeScene(rect);
             }
             GL.ClearColor(currentR, 0, 0, 1.0f);
             GL.Clear((ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit));
@@ -48,9 +48,11 @@ namespace Xamarin3d
             }
         }
 
-        private ShaderProgram shaderProgram;
 
-        private void InitializeScene()
+        private Object3d firstObject;
+        private Camera camera;
+
+        private void InitializeScene(Rectangle rect)
         {
 
             GL.Enable(All.DepthTest);
@@ -59,65 +61,22 @@ namespace Xamarin3d
             GL.Enable(All.Blend);
             GL.BlendFunc(All.One, All.Zero);
 
-            ShaderSourceLoader shaderSource = new ShaderSourceLoader("simpleVertexShader.glsl", "simpleFragmentShader.glsl");
-            shaderProgram = new ShaderProgram(shaderSource.VertexShaderSourceCode, shaderSource.FragmentShaderSourceCode);
-            Initialized = true;
-        }
-        float[] vertices;
-        float[] colors;
-
-        private void RenderScene(Rectangle rect)
-        {
-            //Ativa coisas no shader
-            shaderProgram.Use();
-            //renderiza o triangulo
-            vertices = new float[] {
-                    0.0f, 0.5f, 0.0f,
-                    -0.5f, -0.5f, 0.0f,
-                    0.5f, -0.5f, 0.0f
-            };
-            colors = new float[]
-            {
-                1.0f, 0.0f, 0.0f, 1.0f,
-                0.0f, 1.0f, 0.0f, 1.0f,
-                0.0f, 0.0f, 1.0f, 1.0f,
-            };
-
-            int vpositionIndex = shaderProgram.GetAttributeByName("vPosition").Id;
-            GL.VertexAttribPointer(vpositionIndex, 3, All.Float, false, 0, vertices);
-            GL.EnableVertexAttribArray(vpositionIndex);
-            shaderProgram.BindAttribute("vPosition");
-
-            int colorIndex = shaderProgram.GetAttributeByName("vColor").Id;
-            GL.VertexAttribPointer(colorIndex, 4, All.Float, false, 0, colors);
-            GL.EnableVertexAttribArray(colorIndex);
-            shaderProgram.BindAttribute("vColor");
-
-            Camera camera = new Camera((float)rect.Width, (float)rect.Height);
+            camera = new Camera((float)rect.Width, (float)rect.Height);
             float[] focus = new float[] { 0, 0, 0 };
-            float[] eye = new float[] { 5, 0, 5};
+            float[] eye = new float[] { 5, 0, 5 };
             float[] vup = new float[] { 0, 1, 0 };
             camera.LookAt(focus, eye, vup);
 
-            //float[] identityMatrix = new float[] {
-            //    1, 0, 0, 0,
-            //    0, 1, 0, 0,
-            //    0, 0, 1, 0,
-            //    0, 0, 0, 1,
-            //};
-            //float[] translationMatrix = (float[])identityMatrix.Clone();
-            //GLCommon.Matrix3DSetTranslation(ref translationMatrix, 0.0f, 0.0f, -3.0f);
-            //float[] modelViewMatrix = GLCommon.Matrix3DMultiply(translationMatrix, identityMatrix);
-            //float[] projectionMatrix = (float[])identityMatrix.Clone();
-            //            GLCommon.Matrix3DSetPerspectiveProjectionWithFieldOfView(ref projectionMatrix, 45.0f, 0.1f, 100.0f,
-            //(float)(rect.Width / rect.Height));
-            //float[] matrix = GLCommon.Matrix3DMultiply(projectionMatrix, modelViewMatrix);
+            firstObject = new Object3d();
+            Initialized = true;
+        }
 
-            float[] matrix = camera.ViewProjectionMatrix;
-            int mvp = shaderProgram.GetUniformByName("mvpMatrix").Id;
-            GL.UniformMatrix4(mvp, 1, false, matrix);
 
-            GL.DrawArrays(All.Triangles, 0, 3);
+
+        private void RenderScene(Rectangle rect)
+        {
+            camera.SetViewPort((float)rect.Width, (float)rect.Height);
+            firstObject.Render(camera);
             GL.Finish();
 
         }
