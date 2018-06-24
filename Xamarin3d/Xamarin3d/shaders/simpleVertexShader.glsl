@@ -1,4 +1,5 @@
 ﻿
+uniform mat4 mvpMatrix;
 uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
@@ -10,8 +11,6 @@ attribute vec3 vPosition;
 varying vec4 vertexColor;
 void main()
 {
-	mat4 mvp = projectionMatrix * viewMatrix * modelMatrix;
-
-	gl_Position = mvp * vec4(vPosition, 1.0);
+	gl_Position = mvpMatrix * vec4(vPosition, 1.0);
 	vertexColor = vColor;
 }

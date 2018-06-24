@@ -21,6 +21,52 @@ namespace Xamarin3d.utilities
     /// </summary>
     public static class GLCommon
     {
+        //TODO: fazer com quaternions
+        public static float[] LookAt(float[] _target,   float[] _eye, float[] _upDir)
+        {
+            ///Baseado em http://www.songho.ca/opengl/gl_camera.html
+            Vector3 eye = new Vector3(_eye[0], _eye[1], _eye[2]);
+            Vector3 target = new Vector3(_target[0], _target[1], _target[2]);
+            Vector3 upDir = new Vector3(_upDir[0], _upDir[1], _upDir[2]);
+            // compute the forward vector from target to eye
+            Vector3 forward = eye - target;
+            forward.Normalize();                 // make unit length
+
+            // compute the left vector
+            Vector3 left = Vector3.Cross(upDir, forward); // cross product
+            left.Normalize();
+
+            // recompute the orthonormal up vector            
+            Vector3 up = Vector3.Cross(forward, left);    // cross product
+
+            // init 4x4 matrix
+            float[] matrix = {1,0,0,0,
+                              0,1,0,0,
+                              0,0,1,0,
+                              0,0,0,1};
+            // set rotation part, inverse rotation matrix: M^-1 = M^T for Euclidean transform
+            //TODO: batendo o olho, isso me parece com a matriz dos direction cosines que tanto aparece 
+            //na vtk.
+            matrix[0] = left.X;
+            matrix[4] = left.Y;
+            matrix[8] = left.Z;
+            matrix[1] = up.X;
+            matrix[5] = up.Y;
+            matrix[9] = up.Z;
+            matrix[2] = forward.X;
+            matrix[6] = forward.Y;
+            matrix[10] = forward.Z;
+
+            // set translation part
+            matrix[12] = -left.X * eye.X - left.Y * eye.Y - left.Z * eye.Z;
+            matrix[13] = -up.X * eye.X - up.Y * eye.Y - up.Z * eye.Z;
+            matrix[14] = -forward.X * eye.X - forward.Y * eye.Y - forward.Z * eye.Z;
+
+            return matrix;
+        }
+
+
+
         public static float radiansFromDegrees(float degrees)
         {
             return (float)Math.PI * degrees / 180.0f;

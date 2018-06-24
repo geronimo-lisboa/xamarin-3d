@@ -13,15 +13,15 @@ using Xamarin3d.model.OpenGLInfrastructure;
 //TODO: Se basear no código de https://github.com/xamarin/monodroid-samples/blob/master/GLTriangle20/PaintingView.cs pra escrever o programa básico
 namespace Xamarin3d
 {
-	public partial class MainPage : ContentPage
-	{
-		public MainPage()
-		{
-			InitializeComponent();
+    public partial class MainPage : ContentPage
+    {
+        public MainPage()
+        {
+            InitializeComponent();
             Initialized = false;
             openglView.HasRenderLoop = true;//Sem isso aqui ele não vai usar meu ponteiro de função.
             openglView.OnDisplay = this.OpenGLViewOnDisplay;//Passa o ponteiro de função.
-		}
+        }
 
         private float currentR = 0;
         public bool Initialized { get; private set; }
@@ -42,9 +42,9 @@ namespace Xamarin3d
             currentR += 0.01f;
             if (currentR >= 1.0f)
                 currentR = 0;
-            if(Initialized)
+            if (Initialized)
             {
-                RenderScene();
+                RenderScene(rect);
             }
         }
 
@@ -52,13 +52,21 @@ namespace Xamarin3d
 
         private void InitializeScene()
         {
+
+            GL.Enable(All.DepthTest);
+            GL.Disable(All.CullFace);
+            GL.Enable(All.Texture2D);
+            GL.Enable(All.Blend);
+            GL.BlendFunc(All.One, All.Zero);
+
             ShaderSourceLoader shaderSource = new ShaderSourceLoader("simpleVertexShader.glsl", "simpleFragmentShader.glsl");
             shaderProgram = new ShaderProgram(shaderSource.VertexShaderSourceCode, shaderSource.FragmentShaderSourceCode);
             Initialized = true;
         }
         float[] vertices;
         float[] colors;
-        private void RenderScene()
+
+        private void RenderScene(Rectangle rect)
         {
             //Ativa coisas no shader
             shaderProgram.Use();
@@ -74,7 +82,7 @@ namespace Xamarin3d
                 0.0f, 1.0f, 0.0f, 1.0f,
                 0.0f, 0.0f, 1.0f, 1.0f,
             };
-            
+
             int vpositionIndex = shaderProgram.GetAttributeByName("vPosition").Id;
             GL.VertexAttribPointer(vpositionIndex, 3, All.Float, false, 0, vertices);
             GL.EnableVertexAttribArray(vpositionIndex);
@@ -85,30 +93,33 @@ namespace Xamarin3d
             GL.EnableVertexAttribArray(colorIndex);
             shaderProgram.BindAttribute("vColor");
 
-            float[] identityMatrix = new float[] {
-                1, 0, 0, 0,
-                0, 1, 0, 0,
-                0, 0, 1, 0,
-                0, 0, 0, 1,
-            };
-            //Fazendo a matriz de projeção
-            float[] projectionMatrix = (float[])identityMatrix.Clone();
-            GLCommon.Matrix3DSetPerspectiveProjectionWithFieldOfView(ref projectionMatrix, 45, 0.01f, 100.0f, 1);
-            int projectionMatrixId = shaderProgram.GetUniformByName("projectionMatrix").Id;
-            GL.UniformMatrix4(projectionMatrixId, 1, false, identityMatrix);
-            //Fazendo a view matrix
-            float[] viewMatrix = (float[])identityMatrix.Clone();
-            GLCommon.Matrix3DSetTranslation(ref projectionMatrix, 0.0f, 0.0f, -2.0f);
-            int viewMatrixId = shaderProgram.GetUniformByName("viewMatrix").Id;
-            GL.UniformMatrix4(viewMatrixId, 1, false, identityMatrix);
-            //Fazendo a matriz model
-            float[] modelMatrix = (float[])identityMatrix.Clone();
-            GLCommon.Matrix3DSetTranslation(ref modelMatrix, 0.25f, 0.25f, 0.0f);
-            int modelMatrixId = shaderProgram.GetUniformByName("modelMatrix").Id;
-            GL.UniformMatrix4(modelMatrixId, 1, false, modelMatrix);
+            Camera camera = new Camera((float)rect.Width, (float)rect.Height);
+            float[] focus = new float[] { 0, 0, 0 };
+            float[] eye = new float[] { 5, 0, 5};
+            float[] vup = new float[] { 0, 1, 0 };
+            camera.LookAt(focus, eye, vup);
+
+            //float[] identityMatrix = new float[] {
+            //    1, 0, 0, 0,
+            //    0, 1, 0, 0,
+            //    0, 0, 1, 0,
+            //    0, 0, 0, 1,
+            //};
+            //float[] translationMatrix = (float[])identityMatrix.Clone();
+            //GLCommon.Matrix3DSetTranslation(ref translationMatrix, 0.0f, 0.0f, -3.0f);
+            //float[] modelViewMatrix = GLCommon.Matrix3DMultiply(translationMatrix, identityMatrix);
+            //float[] projectionMatrix = (float[])identityMatrix.Clone();
+            //            GLCommon.Matrix3DSetPerspectiveProjectionWithFieldOfView(ref projectionMatrix, 45.0f, 0.1f, 100.0f,
+            //(float)(rect.Width / rect.Height));
+            //float[] matrix = GLCommon.Matrix3DMultiply(projectionMatrix, modelViewMatrix);
+
+            float[] matrix = camera.ViewProjectionMatrix;
+            int mvp = shaderProgram.GetUniformByName("mvpMatrix").Id;
+            GL.UniformMatrix4(mvp, 1, false, matrix);
 
             GL.DrawArrays(All.Triangles, 0, 3);
             GL.Finish();
+
         }
-	}
+    }
 }
