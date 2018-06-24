@@ -51,7 +51,9 @@ namespace Xamarin3d.model
             int mvp = shaderProgram.GetUniformByName("mvpMatrix").Id;
             GL.UniformMatrix4(mvp, 1, false, matrix);
 
-            GL.DrawArrays(All.Triangles, 0, 3);
+            int numVertices = vertices.Length / 3;
+
+            GL.DrawArrays(All.Triangles, 0, numVertices);
         }
     }
 }

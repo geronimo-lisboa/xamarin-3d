@@ -64,7 +64,7 @@ namespace Xamarin3d
 
             camera = new Camera((float)rect.Width, (float)rect.Height);
             float[] focus = new float[] { 0, 0, 0 };
-            float[] eye = new float[] { 5, 0, 5 };
+            float[] eye = new float[] { 5, 0, 100 };
             float[] vup = new float[] { 0, 1, 0 };
             camera.LookAt(focus, eye, vup);
 
