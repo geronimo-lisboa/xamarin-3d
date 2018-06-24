@@ -7,7 +7,7 @@ using Xamarin3d.utilities;
 
 namespace Xamarin3d.model
 {
-    class Object3d
+    public class Object3d
     {
         private float[] modelMatrix;
         private float[] vertices;
@@ -15,7 +15,7 @@ namespace Xamarin3d.model
         //TODO: no futuro isso deve ser incorporado à uma classe de Material, mas no momento pode ficar assim.
         private ShaderProgram shaderProgram;
 
-        public Object3d()
+        public Object3d(float[] _vertexes, float[] _colors)
         {
             modelMatrix = new float[]
             {
@@ -25,17 +25,8 @@ namespace Xamarin3d.model
                 0,0,0,1
             };
             //TODO: esses vertices estão aqui só pra teste. Mais pra frente eles virão de sources.
-            vertices = new float[] {
-                    0.0f, 0.5f, 0.0f,
-                    -0.5f, -0.5f, 0.0f,
-                    0.5f, -0.5f, 0.0f
-            };
-            colors = new float[]
-{
-                1.0f, 0.0f, 0.0f, 1.0f,
-                0.0f, 1.0f, 0.0f, 1.0f,
-                0.0f, 0.0f, 1.0f, 1.0f,
-            };
+            vertices = _vertexes;
+            colors = _colors;
             //TODO: no futuro isso deve ser incorporado à uma classe de Material, mas no momento pode ficar assim.
             ShaderSourceLoader shaderSource = new ShaderSourceLoader("simpleVertexShader.glsl", "simpleFragmentShader.glsl");
             shaderProgram = new ShaderProgram(shaderSource.VertexShaderSourceCode, shaderSource.FragmentShaderSourceCode);
