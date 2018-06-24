@@ -85,6 +85,16 @@ namespace Xamarin3d
             GL.EnableVertexAttribArray(colorIndex);
             shaderProgram.BindAttribute("vColor");
 
+            float[] identityMatrix = new float[] {
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1,
+            };
+            int mvpId = shaderProgram.GetUniformByName("uMVPMatrix").Id;
+            
+            GL.UniformMatrix4(mvpId,1, true, identityMatrix);
+
             GL.DrawArrays(All.Triangles, 0, 3);
             GL.Finish();
         }

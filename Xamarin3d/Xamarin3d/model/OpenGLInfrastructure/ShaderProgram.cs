@@ -127,7 +127,7 @@ namespace Xamarin3d.model.OpenGLInfrastructure
                 int currAttrLen, currAttrSize;
                 All currType;
                 StringBuilder currAttrName = new StringBuilder(bufSize);
-                GL.GetActiveAttrib(ProgramId, i, bufSize, out currAttrLen, out currAttrSize, out currType, currAttrName);
+                GL.GetActiveUniform(ProgramId, i, bufSize, out currAttrLen, out currAttrSize, out currType, currAttrName);
                 UniformProperties currentUniform = new UniformProperties { Id = i, Name = currAttrName.ToString(), Type = currType };
                 uniforms.Add(currentUniform);
             }
