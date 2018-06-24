@@ -1,6 +1,7 @@
-﻿//A matrix model view projection, que transforma os vertices de objetos no espaço do modelo em objetos
-//no espaço da tela
-uniform mat4 uMVPMatrix;
+﻿
+uniform mat4 modelMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 projectionMatrix;
 //A cor do vertice, serve pra testar se realmente está funcionando direito a introspecção
 attribute vec4 vColor;
 //A posição espacial do vertice atual.
@@ -9,6 +10,8 @@ attribute vec3 vPosition;
 varying vec4 vertexColor;
 void main()
 {
-	gl_Position = uMVPMatrix * vec4(vPosition, 1.0);
+	mat4 mvp = projectionMatrix * viewMatrix * modelMatrix;
+
+	gl_Position = mvp * vec4(vPosition, 1.0);
 	vertexColor = vColor;
 }

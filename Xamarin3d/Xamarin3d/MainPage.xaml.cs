@@ -91,9 +91,21 @@ namespace Xamarin3d
                 0, 0, 1, 0,
                 0, 0, 0, 1,
             };
-            int mvpId = shaderProgram.GetUniformByName("uMVPMatrix").Id;
-            
-            GL.UniformMatrix4(mvpId,1, true, identityMatrix);
+            //Fazendo a matriz de projeção
+            float[] projectionMatrix = (float[])identityMatrix.Clone();
+            GLCommon.Matrix3DSetPerspectiveProjectionWithFieldOfView(ref projectionMatrix, 45, 0.01f, 100.0f, 1);
+            int projectionMatrixId = shaderProgram.GetUniformByName("projectionMatrix").Id;
+            GL.UniformMatrix4(projectionMatrixId, 1, false, identityMatrix);
+            //Fazendo a view matrix
+            float[] viewMatrix = (float[])identityMatrix.Clone();
+            GLCommon.Matrix3DSetTranslation(ref projectionMatrix, 0.0f, 0.0f, -2.0f);
+            int viewMatrixId = shaderProgram.GetUniformByName("viewMatrix").Id;
+            GL.UniformMatrix4(viewMatrixId, 1, false, identityMatrix);
+            //Fazendo a matriz model
+            float[] modelMatrix = (float[])identityMatrix.Clone();
+            GLCommon.Matrix3DSetTranslation(ref modelMatrix, 0.25f, 0.25f, 0.0f);
+            int modelMatrixId = shaderProgram.GetUniformByName("modelMatrix").Id;
+            GL.UniformMatrix4(modelMatrixId, 1, false, modelMatrix);
 
             GL.DrawArrays(All.Triangles, 0, 3);
             GL.Finish();
