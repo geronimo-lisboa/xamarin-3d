@@ -5,9 +5,8 @@ using Xamarin3d.utilities;
 
 namespace Xamarin3d.model
 {
-    class Camera
+    public class Camera
     {
- 
         public float[] ViewMatrix { get; private set; }
         public float[] ProjectionMatrix { get; private set; }
         public float[] ViewProjectionMatrix

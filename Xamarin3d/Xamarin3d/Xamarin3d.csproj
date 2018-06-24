@@ -5,11 +5,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="objects3d\cube.mtl" />
+    <None Remove="objects3d\cube.obj3d" />
     <None Remove="shaders\simpleFragmentShader.glsl" />
     <None Remove="shaders\simpleVertexShader.glsl" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="objects3d\cube.mtl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="objects3d\cube.obj3d">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="shaders\simpleFragmentShader.glsl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>

@@ -10,6 +10,7 @@ using System.IO;
 using Xamarin3d.utilities;
 using Xamarin3d.model;
 using Xamarin3d.model.OpenGLInfrastructure;
+using Xamarin3d.services.sources;
 //TODO: Se basear no código de https://github.com/xamarin/monodroid-samples/blob/master/GLTriangle20/PaintingView.cs pra escrever o programa básico
 namespace Xamarin3d
 {
@@ -67,7 +68,8 @@ namespace Xamarin3d
             float[] vup = new float[] { 0, 1, 0 };
             camera.LookAt(focus, eye, vup);
 
-            firstObject = new Object3d();
+            Object3dSource firstObjectSource = new FileReaderObject3dSource();
+            firstObject = firstObjectSource.Fabricate();
             Initialized = true;
         }
 
