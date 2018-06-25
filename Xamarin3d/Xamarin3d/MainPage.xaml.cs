@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using OpenTK.Graphics.ES30;
+using OpenTK;
 using System.Reflection;
 using System.IO;
 using Xamarin3d.utilities;
@@ -31,7 +32,7 @@ namespace Xamarin3d
         /// Essa aqui é a função que trata da renderização da view de opengl;
         /// </summary>
         /// <param name="rect"></param>
-        private void OpenGLViewOnDisplay(Rectangle rect)
+        private void OpenGLViewOnDisplay(Xamarin.Forms.Rectangle rect)
         {
             GL.Viewport((int)rect.Left, (int)rect.Top, (int)rect.Width, (int)rect.Height);
             if (!Initialized)
@@ -53,7 +54,7 @@ namespace Xamarin3d
         private Object3d firstObject;
         private Camera camera;
 
-        private void InitializeScene(Rectangle rect)
+        private void InitializeScene(Xamarin.Forms.Rectangle rect)
         {
 
             GL.Enable(All.DepthTest);
@@ -74,10 +75,12 @@ namespace Xamarin3d
         }
 
 
-
-        private void RenderScene(Rectangle rect)
+        float ang = 0;
+        private void RenderScene(Xamarin.Forms.Rectangle rect)
         {
             camera.SetViewPort((float)rect.Width, (float)rect.Height);
+            firstObject.Rotate(new Vector3(0, 1, 0), ang);
+            ang = ang + 1;
             firstObject.Render(camera);
             GL.Finish();
 

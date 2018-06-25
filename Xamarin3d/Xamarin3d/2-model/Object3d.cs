@@ -1,4 +1,5 @@
-﻿using OpenTK.Graphics.ES30;
+﻿using OpenTK;
+using OpenTK.Graphics.ES30;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,9 +8,9 @@ using Xamarin3d.utilities;
 
 namespace Xamarin3d.model
 {
-    public class Object3d
+    public class Object3d : IRotatable
     {
-        private float[] modelMatrix;
+        private float[] modelMatrix, rotationMatrix, translationMatrix;
         private float[] vertices;
         private float[] colors;
         //TODO: no futuro isso deve ser incorporado à uma classe de Material, mas no momento pode ficar assim.
@@ -17,19 +18,20 @@ namespace Xamarin3d.model
 
         public Object3d(float[] _vertexes, float[] _colors)
         {
-            modelMatrix = new float[]
-            {
-                1,0,0,0,
-                0,1,0,0,
-                0,0,1,0,
-                0,0,0,1
-            };
+            modelMatrix = GLCommon.Identity();
+            rotationMatrix = (float[])modelMatrix;
+            translationMatrix = (float[])modelMatrix;
             //TODO: esses vertices estão aqui só pra teste. Mais pra frente eles virão de sources.
             vertices = _vertexes;
             colors = _colors;
             //TODO: no futuro isso deve ser incorporado à uma classe de Material, mas no momento pode ficar assim.
             ShaderSourceLoader shaderSource = new ShaderSourceLoader("simpleVertexShader.glsl", "simpleFragmentShader.glsl");
             shaderProgram = new ShaderProgram(shaderSource.VertexShaderSourceCode, shaderSource.FragmentShaderSourceCode);
+        }
+        //TODO: modelMatrix tem que virar uma property;
+        public void CalculateModelMatrix()
+        {
+            modelMatrix = GLCommon.Matrix3DMultiply(translationMatrix, rotationMatrix);
         }
 
         public void Render(Camera camera)
@@ -47,13 +49,22 @@ namespace Xamarin3d.model
             GL.EnableVertexAttribArray(colorIndex);
             shaderProgram.BindAttribute("vColor");
 
-            float[] matrix = camera.ViewProjectionMatrix;
-            int mvp = shaderProgram.GetUniformByName("mvpMatrix").Id;
-            GL.UniformMatrix4(mvp, 1, false, matrix);
+            CalculateModelMatrix();//TODO: quando virar propriedade isso aqui vaza
+            float[] vpMat = camera.ViewProjectionMatrix;
+            float[] mvpMat = GLCommon.Matrix3DMultiply(vpMat, modelMatrix);
+            int mvpId = shaderProgram.GetUniformByName("mvpMatrix").Id;
+            GL.UniformMatrix4(mvpId, 1, false, mvpMat);
 
             int numVertices = vertices.Length / 3;
 
             GL.DrawArrays(All.Triangles, 0, numVertices);
+        }
+
+        public void Rotate(Vector3 axis, float angleInDegree)
+        {
+            var newRotMat = GLCommon.Identity();
+            GLCommon.Matrix3DSetRotationByDegrees(ref newRotMat, angleInDegree, axis);
+            rotationMatrix = newRotMat;
         }
     }
 }

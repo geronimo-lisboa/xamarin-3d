@@ -106,6 +106,18 @@ namespace Xamarin3d.utilities
             matrix[10] = (vector.Z * vector.Z) * (1 - c) + c;
         }
 
+        public static float[] Identity()
+        {
+            var modelMatrix = new float[]
+            {
+                1,0,0,0,
+                0,1,0,0,
+                0,0,1,0,
+                0,0,0,1
+            };
+            return modelMatrix;
+        }
+
         public static void Matrix3DSetRotationByDegrees(ref float[] matrix, float degrees, Vector3 vector)
         {
             Matrix3DSetRotationByRadians(ref matrix, radiansFromDegrees(degrees), ref vector);

@@ -91,15 +91,22 @@ namespace Xamarin3d.services.sources
             {
                 Vector3 v0 = vertexData[f.v0-1];
                 lstVertexBuffer.Add(v0.X); lstVertexBuffer.Add(v0.Y); lstVertexBuffer.Add(v0.Z);
-                lstVertexColor.Add(v0.X); lstVertexColor.Add(v0.Y); lstVertexColor.Add(v0.Z); lstVertexColor.Add(1);
+
+                Vector3 c0 = new Vector3(v0);
+                c0.Normalize();
+                lstVertexColor.Add(c0.X); lstVertexColor.Add(c0.Y); lstVertexColor.Add(c0.Z); lstVertexColor.Add(1);
 
                 Vector3 v1 = vertexData[f.v1-1];
                 lstVertexBuffer.Add(v1.X); lstVertexBuffer.Add(v1.Y); lstVertexBuffer.Add(v1.Z);
-                lstVertexColor.Add(v1.X); lstVertexColor.Add(v1.Y); lstVertexColor.Add(v1.Z); lstVertexColor.Add(1);
+                Vector3 c1 = new Vector3(v1);
+                c1.Normalize();
+                lstVertexColor.Add(c1.X); lstVertexColor.Add(c1.Y); lstVertexColor.Add(c1.Z); lstVertexColor.Add(1);
 
                 Vector3 v2 = vertexData[f.v2-1];
                 lstVertexBuffer.Add(v2.X); lstVertexBuffer.Add(v2.Y); lstVertexBuffer.Add(v2.Z);
-                lstVertexColor.Add(v2.X); lstVertexColor.Add(v2.Y); lstVertexColor.Add(v2.Z); lstVertexColor.Add(1);
+                Vector3 c2 = new Vector3(v2);
+                c2.Normalize();
+                lstVertexColor.Add(c2.X); lstVertexColor.Add(c2.Y); lstVertexColor.Add(c2.Z); lstVertexColor.Add(1);
             }
 
             Object3d obj = new Object3d(lstVertexBuffer.ToArray(), lstVertexColor.ToArray());
