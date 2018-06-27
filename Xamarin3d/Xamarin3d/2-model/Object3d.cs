@@ -2,6 +2,7 @@
 using OpenTK.Graphics.ES30;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 using Xamarin3d.model.OpenGLInfrastructure;
 using Xamarin3d.utilities;
@@ -36,8 +37,10 @@ namespace Xamarin3d.model
             GL.TexParameter(All.Texture2D, All.TextureWrapS, (int)All.ClampToEdge);
             GL.TexParameter(All.Texture2D, All.TextureWrapT, (int)All.ClampToEdge);
             //(OpenTK.Graphics.ES30.All,int,OpenTK.Graphics.ES30.All,int,int,int,OpenTK.Graphics.ES30.All,OpenTK.Graphics.ES30.All,!!0[])            
-            
-            GL.TexImage2D(All.Texture2D, 0, All.Rgb, imageLoader.ImageWidth, imageLoader.ImageWidth, 0, All.Rgb, All.Byte, l); 
+            IntPtr unmanagedPointer = Marshal.AllocHGlobal(b.Length);
+            Marshal.Copy(b, 0, unmanagedPointer, b.Length);
+
+            //GL.TexImage2D(All.Texture2D, 0, All.Rgb, imageLoader.ImageWidth, imageLoader.ImageWidth, 0, All.Rgb, All.Byte, unmanagedPointer); 
             //GL.TexImage2D(All.Texture2D, 0, All.Rgb, imageLoader.ImageWidth, imageLoader.ImageWidth, 0, All.Rgb, All.Byte, imageLoader.ImageBuffer);
 
 
