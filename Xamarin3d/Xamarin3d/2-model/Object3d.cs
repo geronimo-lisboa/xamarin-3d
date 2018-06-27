@@ -15,8 +15,9 @@ namespace Xamarin3d.model
         private float[] colors;
         //TODO: no futuro isso deve ser incorporado à uma classe de Material, mas no momento pode ficar assim.
         private ShaderProgram shaderProgram;
-
-        public Object3d(float[] _vertexes, float[] _colors)
+        private int[] idTextura = { -1 };
+        float[] b = new float[64 * 3];
+        public Object3d(float[] _vertexes, float[] _colors, RawImageLoader imageLoader)
         {
             modelMatrix = GLCommon.Identity();
             rotationMatrix = (float[])modelMatrix;
@@ -27,6 +28,20 @@ namespace Xamarin3d.model
             //TODO: no futuro isso deve ser incorporado à uma classe de Material, mas no momento pode ficar assim.
             ShaderSourceLoader shaderSource = new ShaderSourceLoader("simpleVertexShader.glsl", "simpleFragmentShader.glsl");
             shaderProgram = new ShaderProgram(shaderSource.VertexShaderSourceCode, shaderSource.FragmentShaderSourceCode);
+            //TODO: criação da textura no opengl tem que ir pra uma classe apropriada pra isso.
+            GL.GenTextures(1, idTextura);
+            GL.BindTexture(All.Texture2D, idTextura[0]);
+            GL.TexParameter(All.Texture2D, All.TextureMagFilter, (int)All.Linear);
+            GL.TexParameter(All.Texture2D, All.TextureMinFilter, (int)All.Linear);
+            GL.TexParameter(All.Texture2D, All.TextureWrapS, (int)All.ClampToEdge);
+            GL.TexParameter(All.Texture2D, All.TextureWrapT, (int)All.ClampToEdge);
+            //(OpenTK.Graphics.ES30.All,int,OpenTK.Graphics.ES30.All,int,int,int,OpenTK.Graphics.ES30.All,OpenTK.Graphics.ES30.All,!!0[])            
+            
+            GL.TexImage2D(All.Texture2D, 0, All.Rgb, imageLoader.ImageWidth, imageLoader.ImageWidth, 0, All.Rgb, All.Byte, l); 
+            //GL.TexImage2D(All.Texture2D, 0, All.Rgb, imageLoader.ImageWidth, imageLoader.ImageWidth, 0, All.Rgb, All.Byte, imageLoader.ImageBuffer);
+
+
+            GL.BindTexture(All.Texture2D, 0);//pára de trabalhar com a textura.
         }
         //TODO: modelMatrix tem que virar uma property;
         public void CalculateModelMatrix()

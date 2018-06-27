@@ -7,6 +7,8 @@
   <ItemGroup>
     <None Remove="objects3d\cube.mtl" />
     <None Remove="objects3d\cube.obj3d" />
+    <None Remove="rawtex\bruxo.raw" />
+    <None Remove="rawtex\teste.raw" />
     <None Remove="shaders\simpleFragmentShader.glsl" />
     <None Remove="shaders\simpleVertexShader.glsl" />
   </ItemGroup>
@@ -16,6 +18,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="objects3d\cube.obj3d">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="rawtex\bruxo.raw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="rawtex\teste.raw">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="shaders\simpleFragmentShader.glsl">

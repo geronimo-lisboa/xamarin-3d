@@ -108,8 +108,10 @@ namespace Xamarin3d.services.sources
                 c2.Normalize();
                 lstVertexColor.Add(c2.X); lstVertexColor.Add(c2.Y); lstVertexColor.Add(c2.Z); lstVertexColor.Add(1);
             }
+            //TODO: Area de teste da carga de textura
+            RawImageLoader imageLoader = new RawImageLoader("teste.raw");
 
-            Object3d obj = new Object3d(lstVertexBuffer.ToArray(), lstVertexColor.ToArray());
+            Object3d obj = new Object3d(lstVertexBuffer.ToArray(), lstVertexColor.ToArray(), imageLoader);
             return obj;
         }
     }

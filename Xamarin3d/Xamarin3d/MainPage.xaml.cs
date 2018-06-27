@@ -56,7 +56,7 @@ namespace Xamarin3d
 
         private void InitializeScene(Xamarin.Forms.Rectangle rect)
         {
-
+            GL.Enable(All.Texture2D);
             GL.Enable(All.DepthTest);
             GL.Disable(All.CullFace);
             GL.Enable(All.Texture2D);

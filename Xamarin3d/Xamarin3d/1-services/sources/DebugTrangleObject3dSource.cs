@@ -20,7 +20,7 @@ namespace Xamarin3d.services.sources
                 0.0f, 1.0f, 0.0f, 1.0f,
                 0.0f, 0.0f, 1.0f, 1.0f,
             };
-            Object3d obj = new Object3d(vertices, colors);
+            Object3d obj = new Object3d(vertices, colors, null);
             return obj;
         }
     }
